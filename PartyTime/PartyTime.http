@@ -1,0 +1,6 @@
+@PartyTime_HostAddress = http://localhost:5195
+
+GET {{PartyTime_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
