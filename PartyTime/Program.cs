@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PartyTime.Contexts;
 using dotenv.net;
+using System.Linq;
 
 DotEnv.Load();
 

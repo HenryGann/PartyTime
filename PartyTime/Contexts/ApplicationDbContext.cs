@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PartyTime.Models;
-using System.Collections.Generic;
 
 namespace PartyTime.Contexts
 {
@@ -11,7 +10,7 @@ namespace PartyTime.Contexts
         {
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserModel> Users { get; set; }
     }
 
 }

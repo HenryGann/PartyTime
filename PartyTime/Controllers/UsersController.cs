@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using PartyTime.Util;
 using PartyTime.Contexts;
+using PartyTime.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,8 +13,6 @@ namespace PartyTime.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private static string connString = "Host=localhost;Port=5432;Username=party_admin;Password=partyTime;Database=partyTime";
-
         private readonly ApplicationDbContext _context;
 
         public UsersController(ApplicationDbContext context)
@@ -36,8 +37,18 @@ namespace PartyTime.Controllers
 
         // POST api/<UsersController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] LoginModel body)
         {
+            var user = _context.Users.Where(u => u.username == body.username).FirstOrDefault();
+            Console.Out.WriteLine(Auth.CalculateUserSHA256(user));
+            if (Auth.CalculateUserSHA256(user) == user.password)
+            {
+                return Ok("Correct");
+            }
+            else
+            {
+                return Unauthorized("Wrong Password");
+            }
         }
 
         // PUT api/<UsersController>/5
