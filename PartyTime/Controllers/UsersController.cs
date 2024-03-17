@@ -39,17 +39,25 @@ namespace PartyTime.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] LoginModel body)
         {
-            var user = _context.Users.Where(u => u.username == body.username).FirstOrDefault();
-            Console.Out.WriteLine(Auth.CalculateUserSHA256(user));
-            if (Auth.CalculateUserSHA256(user) == user.password)
+            var user = _context.Users.FirstOrDefault(u => u.username == body.username);
+
+            if (user == null)
+            {
+                // Return a 404 Not Found response if the user is not found
+                return NotFound("User not found");
+            }
+
+            if (Auth.CalculateUserSHA256(body.password, user.salt) == user.password)
             {
                 return Ok("Correct");
             }
             else
             {
-                return Unauthorized("Wrong Password");
+                // Return a 401 Unauthorized response if the password is incorrect
+                return Unauthorized("Incorrect password");
             }
         }
+
 
         // PUT api/<UsersController>/5
         [HttpPut("{id}")]

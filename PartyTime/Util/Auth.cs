@@ -21,9 +21,9 @@ namespace PartyTime.Util
             }
         }
 
-        public static string CalculateUserSHA256(UserModel user)
+        public static string CalculateUserSHA256(string password, string salt)
         {
-            return CalculateSHA256(user.password + user.salt);
+            return CalculateSHA256(password + salt);
         }
     }
 }
