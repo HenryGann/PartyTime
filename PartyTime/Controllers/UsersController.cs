@@ -4,6 +4,8 @@ using System.Linq;
 using PartyTime.Util;
 using PartyTime.Contexts;
 using PartyTime.Models;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,14 +16,17 @@ namespace PartyTime.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly string _secret;
 
         public UsersController(ApplicationDbContext context)
         {
             _context = context;
+            _secret = Environment.GetEnvironmentVariable("Jwt:secret");
         }
 
         // GET: api/<UsersController>
         [HttpGet]
+        [Authorize(Roles = "User")]
         public IActionResult GetUsers()
         {
             var Users = _context.Users.FromSqlRaw("SELECT * FROM users").ToList();
@@ -49,7 +54,9 @@ namespace PartyTime.Controllers
 
             if (Auth.CalculateUserSHA256(body.password, user.salt) == user.password)
             {
-                return Ok("Correct");
+                var accessToken = Auth.GenerateAccessToken(user, _secret);
+
+                return Ok(accessToken);
             }
             else
             {

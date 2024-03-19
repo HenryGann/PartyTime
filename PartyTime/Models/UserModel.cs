@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace PartyTime.Models
 {
     [Table("users")]
-    public class UserModel
+    public class User
     {
         private int id { get; set; }
         private string first_name { get; set; }
@@ -16,6 +16,6 @@ namespace PartyTime.Models
         public string password { get; set; }
 
         public string salt { get; set; }
-        private string role { get; set; }
+        public string role { get; set; }
     }
 }
