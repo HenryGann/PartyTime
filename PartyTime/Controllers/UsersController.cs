@@ -41,7 +41,7 @@ namespace PartyTime.Controllers
 
         // POST api/<UsersController>
         [HttpPost("Login")]
-        public IActionResult Post([FromBody] LoginModel body)
+        public IActionResult LoginPost([FromBody] LoginModel body)
         {
             var user = _context.Users.FirstOrDefault(u => u.Username == body.username);
 
@@ -62,6 +62,15 @@ namespace PartyTime.Controllers
                 // Return a 401 Unauthorized response if the password is incorrect
                 return Unauthorized("Incorrect password");
             }
+        }
+
+        [HttpPost]
+        public IActionResult CreateUserPost([FromBody] NewUser newUser)
+        {
+            User user = new(newUser);
+            _context.Users.Add(user);
+            _context.SaveChanges();
+            return Ok();
         }
 
 
