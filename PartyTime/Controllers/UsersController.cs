@@ -26,10 +26,9 @@ namespace PartyTime.Controllers
 
         // GET: api/<UsersController>
         [HttpGet]
-        [Authorize(Roles = "User")]
         public IActionResult GetUsers()
         {
-            var Users = _context.Users.FromSqlRaw("SELECT * FROM users").ToList();
+            var Users = _context.Users.FirstOrDefault(u => u.Id == 1);
             return Ok(Users);
         }
 
@@ -41,10 +40,10 @@ namespace PartyTime.Controllers
         }
 
         // POST api/<UsersController>
-        [HttpPost]
+        [HttpPost("Login")]
         public IActionResult Post([FromBody] LoginModel body)
         {
-            var user = _context.Users.FirstOrDefault(u => u.username == body.username);
+            var user = _context.Users.FirstOrDefault(u => u.Username == body.username);
 
             if (user == null)
             {
@@ -52,7 +51,7 @@ namespace PartyTime.Controllers
                 return NotFound("User not found");
             }
 
-            if (Auth.CalculateUserSHA256(body.password, user.salt) == user.password)
+            if (Auth.CalculateUserSHA256(body.password, user.Salt) == user.Password)
             {
                 var accessToken = Auth.GenerateAccessToken(user, _secret);
 

@@ -37,8 +37,8 @@ namespace PartyTime.Util
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { 
-                    new Claim("id", user.username.ToString()),
-                    new Claim(ClaimTypes.Role, user.role.ToString())
+                    new Claim("Id", user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(15), // Token expiration time
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

@@ -5,17 +5,29 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PartyTime.Models
 {
+
+
     [Table("users")]
     public class User
     {
-        private int id { get; set; }
-        private string first_name { get; set; }
-        private string last_name { get; set; }
-        [Key]
-        public string username { get; set; }
-        public string password { get; set; }
+        public User(int id, string username, string password, string salt, string role)
+        {
+            Id = id;
+            Username = username;
+            Password = password;
+            Salt = salt;
+            Role = role;
+        }
 
-        public string salt { get; set; }
-        public string role { get; set; }
+        [Key]
+        public int Id { get; set; }
+
+        public string Username { get; set; }
+        public string Password { get; set; }
+
+        public string Salt { get; set; }
+        public string Role { get; set; }
     }
+
+
 }
