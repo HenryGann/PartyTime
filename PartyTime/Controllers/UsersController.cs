@@ -24,26 +24,29 @@ namespace PartyTime.Controllers
             _secret = Environment.GetEnvironmentVariable("Jwt:secret");
         }
 
-        // GET: api/<UsersController>
         [HttpGet]
-        public IActionResult GetUsers()
+        public async Task<IActionResult> GetUsers()
         {
-            var Users = _context.Users.FirstOrDefault(u => u.Id == 1);
+            var Users = await _context.Users.ToListAsync();
             return Ok(Users);
         }
 
-        // GET api/<UsersController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        [Authorize(Roles="Admin")]
+        public async Task<IActionResult> GetUserData(int id)
         {
-            return "value";
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if( user == null)
+            {
+                return NotFound("User not found");
+            }
+            return Ok(user);
         }
 
-        // POST api/<UsersController>
         [HttpPost("Login")]
-        public IActionResult LoginPost([FromBody] LoginModel body)
+        public async Task<IActionResult> LoginPost([FromBody] LoginModel body)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Username == body.username);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == body.username);
 
             if (user == null)
             {
@@ -65,25 +68,29 @@ namespace PartyTime.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUserPost([FromBody] NewUser newUser)
+        public async Task<IActionResult> CreateUserPost([FromBody] NewUser newUser)
         {
             User user = new(newUser);
+
             _context.Users.Add(user);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
             return Ok();
         }
 
-
-        // PUT api/<UsersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<UsersController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
