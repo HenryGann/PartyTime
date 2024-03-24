@@ -10,7 +10,9 @@ namespace PartyTime.Contexts
         {
         }
 
-        public DbSet<User> Users { get; set; }
+        public ApplicationDbContext() { }
+
+        public virtual DbSet<User> Users { get; set; }
     }
 
 }
