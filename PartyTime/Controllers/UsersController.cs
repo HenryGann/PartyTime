@@ -46,7 +46,7 @@ namespace PartyTime.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> LoginPost([FromBody] LoginModel body)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == body.username);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == body.Username);
 
             if (user == null)
             {
@@ -54,7 +54,7 @@ namespace PartyTime.Controllers
                 return NotFound("User not found");
             }
 
-            if (Auth.CalculateUserSHA256(body.password, user.Salt) == user.Password)
+            if (Auth.CalculateUserSHA256(body.Password, user.Salt) == user.Password)
             {
                 var accessToken = Auth.GenerateAccessToken(user, _secret);
 

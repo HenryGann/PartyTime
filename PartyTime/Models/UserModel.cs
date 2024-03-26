@@ -27,6 +27,23 @@ namespace PartyTime.Models
     [Table("users")]
     public class User
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column("id")]
+        public int Id { get; set; }
+
+        [Column("username")] // Explicitly specify the column name
+        public string Username { get; set; }
+
+        [Column("password")] // Explicitly specify the column name
+        public string Password { get; set; }
+
+        [Column("salt")] // Explicitly specify the column name
+        public string Salt { get; set; }
+
+        [Column("role")] // Explicitly specify the column name
+        public string Role { get; set; }
+
         public User(int id, string username, string password, string salt, string role)
         {
             Id = id;
@@ -44,22 +61,6 @@ namespace PartyTime.Models
             Role = newUser.Role;
         }
 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id")]
-        public int Id { get; set; }
-
-        [Column("username")] // Explicitly specify the column name
-        public string Username { get; set; }
-
-        [Column("password")] // Explicitly specify the column name
-        public string Password { get; set; }
-
-        [Column("salt")] // Explicitly specify the column name
-        public string Salt { get; set; }
-
-        [Column("role")] // Explicitly specify the column name
-        public string Role { get; set; }
     }
 
 
