@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PartyTime.Contexts;
+using PartyTime.Repository;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,12 +13,12 @@ namespace PartyTime.Controllers
     {
 
 
-        private readonly ApplicationDbContext _context;
+        private readonly EventRepository eventRepository;
         private readonly string _secret;
 
         public EventsController(ApplicationDbContext context)
         {
-            _context = context;
+            eventRepository = new EventRepository(context); 
             _secret = Environment.GetEnvironmentVariable("Jwt:secret");
         }
 
@@ -31,7 +32,7 @@ namespace PartyTime.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEvent(int id)
         {
-            var eventItem = await _context.Events.FindAsync(id);
+            var eventItem = await eventRepository.GetEventWithUsername(id);
             return Ok(eventItem);
         }
     }

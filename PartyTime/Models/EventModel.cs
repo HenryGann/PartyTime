@@ -1,16 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PartyTime.Models
 {
-    public class NewEvent(string title, string summary, string location, DateTime dateTime)
-    {
-        public string Title { get; set; } = title;
-        public string Summary { get; set; } = summary;
-        public string Location { get; set; } = location;
-        public DateTime DateTime { get; set; } = dateTime;
-    }
-
     [Table("events")]
     public class Event
     {
@@ -31,21 +24,34 @@ namespace PartyTime.Models
         [Column("date_time")]
         public DateTime DateTime { get; set; }
 
-        public Event(int id, string title, string summary, string location, DateTime dateTime)
+        [Column("owner")] // Foreign key column
+        public int OwnerId { get; set; }
+
+        // Parameterized constructor
+        public Event(int id, string title, string summary, string location, DateTime dateTime, int ownerId)
         {
             Id = id;
             Title = title;
             Summary = summary;
             Location = location;
             DateTime = dateTime;
+            OwnerId = ownerId;
         }
 
-        public Event(NewEvent newEvent)
+        // Parameterless constructor (required by Entity Framework Core)
+        public Event()
         {
-            Title = newEvent.Title;
-            Summary = newEvent.Summary;
-            Location = newEvent.Location;
-            DateTime = newEvent.DateTime;
         }
     }
+    
+    public class EventDTO
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Summary { get; set; }
+        public string Location { get; set; }
+        public DateTime DateTime { get; set; }
+        public string EventCreator { get; set; }
+    }
+
 }
