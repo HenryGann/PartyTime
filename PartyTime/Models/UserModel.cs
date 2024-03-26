@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PartyTime.Enums;
-using PartyTime.Util;
+﻿using PartyTime.Util;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -32,16 +30,16 @@ namespace PartyTime.Models
         [Column("id")]
         public int Id { get; set; }
 
-        [Column("username")] // Explicitly specify the column name
+        [Column("username")]
         public string Username { get; set; }
 
-        [Column("password")] // Explicitly specify the column name
+        [Column("password")]
         public string Password { get; set; }
 
-        [Column("salt")] // Explicitly specify the column name
+        [Column("salt")]
         public string Salt { get; set; }
 
-        [Column("role")] // Explicitly specify the column name
+        [Column("role")]
         public string Role { get; set; }
 
         public User(int id, string username, string password, string salt, string role)
