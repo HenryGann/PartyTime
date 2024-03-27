@@ -42,8 +42,46 @@ namespace PartyTime.Models
         public Event()
         {
         }
+
+        public Event(NewEventDTO eventDTO, int ownerId)
+        {
+            if (eventDTO == null)
+            {
+                throw new ArgumentNullException(nameof(eventDTO));
+            }
+
+            Title = eventDTO.Title;
+            Summary = eventDTO.Summary;
+            Location = eventDTO.Location;
+            DateTime = eventDTO.DateTime;
+            OwnerId = ownerId;
+        }
     }
-    
+
+    public class NewEvent
+    {
+
+        public string Title { get; set; }
+        public string Summary { get; set; }
+        public string Location { get; set; }
+        public DateTime DateTime { get; set; }
+        public int OwnerId { get; set; }
+
+        public NewEvent(EventDTO eventDTO, int ownerId)
+        {
+            if (eventDTO == null)
+            {
+                throw new ArgumentNullException(nameof(eventDTO));
+            }
+
+            Title = eventDTO.Title;
+            Summary = eventDTO.Summary;
+            Location = eventDTO.Location;
+            DateTime = eventDTO.DateTime;
+            OwnerId = ownerId;
+        }
+    }
+
     public class EventDTO
     {
         public int Id { get; set; }
@@ -52,6 +90,15 @@ namespace PartyTime.Models
         public string Location { get; set; }
         public DateTime DateTime { get; set; }
         public string EventCreator { get; set; }
+    }
+
+    public class NewEventDTO
+    {
+            public string Title { get; set; }
+            public string Summary { get; set; }
+            public string Location { get; set; }
+            public DateTime DateTime { get; set; }
+            public string EventCreator { get; set; }
     }
 
 }
