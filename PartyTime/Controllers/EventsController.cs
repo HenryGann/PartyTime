@@ -45,9 +45,24 @@ namespace PartyTime.Controllers
         }
 
         [Authorize]
-        [HttpPut]
-        public async Task<IActionResult> PutEvent([FromBody] EventDTO updatedEvent)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutEvent([FromBody] EventDTO updatedEvent, int id)
         {
+            var originalEvent = await eventRepository.GetEvent(updatedEvent.Id);
+
+            if(originalEvent == null)
+            {
+                return NotFound();
+            }
+
+            var originalDTO = await eventRepository.GetEventWithUsername(updatedEvent.Id);
+            var originalCreator = originalDTO.EventCreator;
+
+            if(updatedEvent.Id != originalEvent.Id || updatedEvent.EventCreator != originalCreator)
+            {
+                return BadRequest("Both event ID and event creator cannot be changed");
+            }
+
             var isAdmin = Auth.isAdmin(HttpContext);
             var userId = Auth.getUserId(HttpContext);
 
@@ -57,6 +72,15 @@ namespace PartyTime.Controllers
             {
                 return Unauthorized();
             }
+
+            originalEvent.Title = updatedEvent.Title;
+            originalEvent.Location = updatedEvent.Location;
+            originalEvent.Summary = updatedEvent.Summary;
+            originalEvent.DateTime = updatedEvent.DateTime;
+
+            _context.Entry(originalEvent).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
             return Ok();
 
             

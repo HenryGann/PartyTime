@@ -15,6 +15,11 @@ public class EventRepository
         _context = context;
     }
 
+    public async Task<Event> GetEvent(int eventId)
+    {
+        return await _context.Events.FirstOrDefaultAsync(e => e.Id == eventId);
+    }
+
     public async Task<EventDTO> GetEventWithUsername(int eventId)
     {
         var query = from e in _context.Events
