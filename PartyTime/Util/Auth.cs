@@ -4,6 +4,8 @@ using PartyTime.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Principal;
+using System.Xml.Linq;
 
 namespace PartyTime.Util
 {
@@ -36,9 +38,9 @@ namespace PartyTime.Util
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { 
+                Subject = new ClaimsIdentity(new[] {
                     new Claim("Id", user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role.ToString())
+                    new Claim("Role", user.Role.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(15), // Token expiration time
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -74,6 +76,26 @@ namespace PartyTime.Util
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        public static bool isAdmin(HttpContext context)
+        {
+            var claims = context.User.Claims;
+            return claims.Any(c => c.Type == "Role" && c.Value == "Admin");
+        }
+
+        public static int getUserId(HttpContext context)
+        {
+            // Retrieve the user's claims from the HttpContext
+            var claims = context.User.Claims;
+
+            // Find the claim with the specified role ID
+            var userId = claims.FirstOrDefault(c => c.Type == "Id");
+            if (userId != null)
+            {
+                return int.Parse(userId.Value);
+            }
+            return -1;
         }
     }
 }

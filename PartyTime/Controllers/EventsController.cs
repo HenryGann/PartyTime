@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PartyTime.Contexts;
 using PartyTime.Models;
 using PartyTime.Repository;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using PartyTime.Util;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -40,10 +44,28 @@ namespace PartyTime.Controllers
             return Ok(eventItem);
         }
 
+        [Authorize]
+        [HttpPut]
+        public async Task<IActionResult> PutEvent([FromBody] EventDTO updatedEvent)
+        {
+            var isAdmin = Auth.isAdmin(HttpContext);
+            var userId = Auth.getUserId(HttpContext);
+
+            var e = await eventRepository.EventDTOtoEvent(updatedEvent);
+
+            if (!isAdmin && e.OwnerId != userId)
+            {
+                return Unauthorized();
+            }
+            return Ok();
+
+            
+        }
+
         [HttpPost]
         public async Task<IActionResult> PostEvent([FromBody] NewEventDTO eventDTO)
         {
-            var newEvent = await eventRepository.EventDTOtoEvent(eventDTO);
+            var newEvent = await eventRepository.NewEventDTOtoEvent(eventDTO);
             _context.Events.Add(newEvent);
             await _context.SaveChangesAsync();
             return Ok();

@@ -43,7 +43,7 @@ namespace PartyTime.Models
         {
         }
 
-        public Event(NewEventDTO eventDTO, int ownerId)
+        public Event(EventBaseDTO eventDTO, int ownerId)
         {
             if (eventDTO == null)
             {
@@ -82,23 +82,22 @@ namespace PartyTime.Models
         }
     }
 
-    public class EventDTO
+    public class EventBaseDTO
     {
-        public int Id { get; set; }
         public string Title { get; set; }
         public string Summary { get; set; }
         public string Location { get; set; }
         public DateTime DateTime { get; set; }
+    }
+
+    public class EventDTO : EventBaseDTO
+    {
+        public int Id { get; set; }
         public string EventCreator { get; set; }
     }
 
-    public class NewEventDTO
+    public class NewEventDTO : EventBaseDTO
     {
-            public string Title { get; set; }
-            public string Summary { get; set; }
-            public string Location { get; set; }
-            public DateTime DateTime { get; set; }
-            public string EventCreator { get; set; }
+        public string EventCreator { get; set; }
     }
-
 }

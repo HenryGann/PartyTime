@@ -50,7 +50,26 @@ public class EventRepository
         return await query.ToListAsync();
     }
 
-    public async Task<Event> EventDTOtoEvent(NewEventDTO eventDTO)
+    public async Task<Event> NewEventDTOtoEvent(NewEventDTO eventDTO)
+    {
+        if (eventDTO == null)
+        {
+            throw new ArgumentNullException(nameof(eventDTO));
+        }
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == eventDTO.EventCreator);
+
+        if (user == null)
+        {
+            throw new ArgumentException($"Event with owner username '{eventDTO.EventCreator}' not found");
+        }
+
+        var newEvent = new Event(eventDTO, user.Id);
+
+        return newEvent;
+    }
+
+    public async Task<Event> EventDTOtoEvent(EventDTO eventDTO)
     {
         if (eventDTO == null)
         {
