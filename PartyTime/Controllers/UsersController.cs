@@ -25,6 +25,7 @@ namespace PartyTime.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUsers()
         {
             var Users = await _context.Users.ToListAsync();

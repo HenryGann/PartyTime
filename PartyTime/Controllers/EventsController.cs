@@ -81,15 +81,22 @@ namespace PartyTime.Controllers
             _context.Entry(originalEvent).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            return Ok();
-
-            
+            return NoContent();
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> PostEvent([FromBody] NewEventDTO eventDTO)
         {
             var newEvent = await eventRepository.NewEventDTOtoEvent(eventDTO);
+            var userId = Auth.getUserId(HttpContext);
+            var isAdmin = Auth.isAdmin(HttpContext);
+
+            if(newEvent.OwnerId != userId && !isAdmin)
+            {
+                return Unauthorized("Your ID does not match the given username");
+            }
+
             _context.Events.Add(newEvent);
             await _context.SaveChangesAsync();
             return Ok();
@@ -98,10 +105,20 @@ namespace PartyTime.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
-            var e = await _context.Events.FindAsync(id);
-            if (e == null)
+            var originalDTO = await eventRepository.GetEventWithUsername(id);
+            if (originalDTO == null)
             {
                 return NotFound();
+            }
+
+            var isAdmin = Auth.isAdmin(HttpContext);
+            var userId = Auth.getUserId(HttpContext);
+
+            var e = await eventRepository.EventDTOtoEvent(originalDTO);
+
+            if (!isAdmin && e.OwnerId != userId)
+            {
+                return Unauthorized();
             }
 
             _context.Events.Remove(e);
